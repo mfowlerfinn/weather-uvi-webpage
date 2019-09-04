@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Weather</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div class="site-container">
+    <ul class="container data"></ul>
+    <div id="notes" class="notes">Background gradient varies by UV. --- API requests fail after 100 requests per day.</div>
+    <form id="locForm" class="change_location">
+      <div id="location" class="location">Loading location...</div>
+      <input type="text" class="input" id="lat" name="lat" placeholder="latitude">
+      <input type="text" class="input" id="lon" name="lon" placeholder="longitude">
+      <input type="submit" class="input" value="Set Location">
+      <button id="default-location" class="input" onclick="setLocation()">Use Default</button>
+    </form>
+  </div>
+  <script src="weather_api.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,84 @@
+:root {
+  --color-top-h: 0;
+  --color-top-l: 50; /*intentially left off %*/
+  --color-bot-h: 25;
+  --color-bot-l: 50; /*intentially left off %*/
+  --color-text: black;
+}
+
+html {
+  box-sizing: border-box;
+  font-family: 'helvetica neue';
+  font-size: 25px;
+  font-weight: 200;
+}
+body {
+  background: linear-gradient(-15deg, hsl(var(--color-bot-h), 50%, var(--color-bot-l)), hsl(var(--color-top-h), 50%, var(--color-top-l)));
+  color: var(--color-text);
+  margin: 0;
+}
+.site-container {
+  display:flex;
+  flex-direction: column;
+  margin-left: 20px;
+  margin-right: 10px;
+  height: 100vh;
+}
+
+.data {
+  flex:1;
+  padding:0;
+}
+
+
+#locForm {
+  padding: 0;
+  margin: 0;
+  display: flex; 
+  flex-flow: wrap;
+  border-top: 5px solid var(--color-text);
+  padding-bottom: 20px;
+}
+
+.notes {
+  font-size: 14px;
+  margin: auto;
+}
+
+.location {
+  font-size: 40px;
+  flex:1;
+  display: flex;
+  flex-flow: wrap;
+  min-width:250px;
+}
+
+.coord-container {
+  font-size: 14px;
+  display: flex;
+  flex-flow: wrap;
+}
+
+.coord {
+  padding-left:15px;
+  padding-top:5px;
+  padding-bottom:15px;
+}
+
+.input {
+  height: 3em;
+  -webkit-appearance: none;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+li {
+  list-style: none;
+  display:block;
+}
+
+.value {
+  font-size: 60px;
+}
