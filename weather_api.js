@@ -1,5 +1,6 @@
 let weather;
 let uvi;
+let sum;
 let lat = 0;
 let lng = 0;
 let latD = 38.603174;
@@ -30,22 +31,24 @@ function getLocation() {
     return urlparameter;
   }
 
-  const latArg = getUrlParam("lat", 0);
-  const lonArg = getUrlParam("lon", 0);
+  const latArg = getUrlParam("lat", null);
+  const lonArg = getUrlParam("lon", null);
 
-  if (latArg === 0 || lonArg === 0) {
-    alert('Please set location or select "Use Default"');
+  if (latArg === null || lonArg === null) {
+    alert('Please set location... now using default');
+    lat = latD;
+    lng = lngD;
   } else {
     lat = latArg;
     lng = lonArg;
-    loc.innerHTML = `
-              <div class="coord-container">
-                  <div class="coord">lat:${lat}</div>
-                  <div class="coord">lon:${lng}</div>
-              </div>
-              `;
-    getData();
   }
+  loc.innerHTML = `
+    <div class="coord-container">
+        <div class="coord">lat:${lat}</div>
+        <div class="coord">lon:${lng}</div>
+    </div>
+    `;
+  getData();
 }
 
 function setLocation() {
@@ -55,42 +58,44 @@ function setLocation() {
 }
 
 function getData() {
-  //if (lat === 0 && lng === 0);
-  fetch(
-    `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&APPID=${ID_openweather}&units=imperial`
-  )
-    .then(function(response) {
-      return response.json();
-    })
-    .then(function(myJson) {
-      weather = jsonCopy(myJson);
-      console.log(weather);
-      verifyData();
-    });
+  list.innerHTML = `Fetching data...`;
+  getWeather();
 
-  function jsonCopy(src) {
-    return JSON.parse(JSON.stringify(src));
+  function getWeather() {
+    fetch(
+      `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&APPID=${ID_openweather}&units=imperial`
+    )
+      .then(function(response) {
+        return response.json();
+      })
+      .then(function(myJson) {
+        weather = jsonCopy(myJson);
+        // console.log(weather);
+      })
+      .then(() => getUVI());
   }
 
-  fetch(`https://api.openuv.io/api/v1/uv?lat=${lat}&lng=${lng}`, {
-    method: "GET",
-    headers: {
-      "content-type": "application/json",
-      "x-access-token": `${ID_openuvi}`
-    }
-  })
-    .then(function(response) {
-      return response.json();
+  function getUVI() {
+    fetch(`https://api.openuv.io/api/v1/uv?lat=${lat}&lng=${lng}`, {
+      method: "GET",
+      headers: {
+        "content-type": "application/json",
+        "x-access-token": `${ID_openuvi}`
+      }
     })
-    .then(function(myJson) {
-      uvi = jsonCopy(myJson);
-      console.log(uvi);
-      verifyData();
-    });
+      .then(function(response) {
+        return response.json();
+      })
+      .then(function(myJson) {
+        uvi = jsonCopy(myJson);
+        // console.log(uvi);
+      })
+      .then(() => updatePage());
+    }
 }
 
-function verifyData() {
-  if (weather !== null && uvi !== null) updatePage();
+function jsonCopy(src) {
+  return JSON.parse(JSON.stringify(src));
 }
 
 function updatePage() {
@@ -110,10 +115,10 @@ function updatePage() {
         <li>Solar Noon: ${solarNoon}</li>
         `;
 
-  Object.keys(uvi).forEach(function(item) {
-    console.log(item); // key
-    console.log(uvi[item]); // value
-  });
+  // Object.keys(uvi).forEach(function(item) {
+  //   console.log(item); // key
+  //   console.log(uvi[item]); // value
+  // });
   setColor();
 }
 
