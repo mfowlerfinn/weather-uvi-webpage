@@ -59,7 +59,7 @@ function setLocation() {
 function getData() {
   if (lat === 0 && lng === 0);
   fetch(
-      `http://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&APPID=${ID_openweather}&units=imperial`
+      `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&APPID=${ID_openweather}&units=imperial`
     )
     .then(function(response) {
       return response.json();
