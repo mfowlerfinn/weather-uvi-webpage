@@ -34,18 +34,17 @@ function getLocation() {
   const lonArg = getUrlParam("lon", 0);
 
   if (latArg === 0 || lonArg === 0) {
-    alert("Please set location or select \"Use Default\"");
-  }
-  else {
+    alert('Please set location or select "Use Default"');
+  } else {
     lat = latArg;
     lng = lonArg;
     loc.innerHTML = `
-            <div class="coord-container">
-                <div class="coord">lat:${lat}</div>
-                <div class="coord">lon:${lng}</div>
-            </div>
-            `;
-  getData();
+              <div class="coord-container">
+                  <div class="coord">lat:${lat}</div>
+                  <div class="coord">lon:${lng}</div>
+              </div>
+              `;
+    getData();
   }
 }
 
@@ -55,18 +54,18 @@ function setLocation() {
   document.getElementById("locForm").submit();
 }
 
-
 function getData() {
-  if (lat === 0 && lng === 0);
+  //if (lat === 0 && lng === 0);
   fetch(
-      `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&APPID=${ID_openweather}&units=imperial`
-    )
+    `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&APPID=${ID_openweather}&units=imperial`
+  )
     .then(function(response) {
       return response.json();
     })
     .then(function(myJson) {
       weather = jsonCopy(myJson);
       console.log(weather);
+      verifyData();
     });
 
   function jsonCopy(src) {
@@ -74,20 +73,24 @@ function getData() {
   }
 
   fetch(`https://api.openuv.io/api/v1/uv?lat=${lat}&lng=${lng}`, {
-      method: "GET",
-      headers: {
-        "content-type": "application/json",
-        "x-access-token": `${ID_openuvi}`
-      }
-    })
+    method: "GET",
+    headers: {
+      "content-type": "application/json",
+      "x-access-token": `${ID_openuvi}`
+    }
+  })
     .then(function(response) {
       return response.json();
     })
     .then(function(myJson) {
       uvi = jsonCopy(myJson);
       console.log(uvi);
-      updatePage();
+      verifyData();
     });
+}
+
+function verifyData() {
+  if (weather !== null && uvi !== null) updatePage();
 }
 
 function updatePage() {
@@ -118,7 +121,8 @@ function setColor() {
   let current = uvi.result.uv;
   let max = uvi.result.uv_max;
   let topHue, topLight, botHue, botLight, textColor;
-  const map = (value, x1, y1, x2, y2) => Math.floor((value - x1) * (y2 - x2) / (y1 - x1) + x2);
+  const map = (value, x1, y1, x2, y2) =>
+    Math.floor(((value - x1) * (y2 - x2)) / (y1 - x1) + x2);
   const uvMax = 11;
   const uvMin = 0;
   const twilight = 0.1;
@@ -128,14 +132,13 @@ function setColor() {
     topHue = map(current, uvMin, uvMax, 100, 0);
     botHue = map(max, uvMin, uvMax, 100, 0);
     botLight = 60;
-  } 
-  else {
+  } else {
     topHue = map(current, uvMin, twilight, 238, 180);
     topLight = map(current, uvMin, twilight, 10, 50);
     botHue = map(current, uvMin, twilight, 220, 180);
     botLight = map(current, uvMin, twilight, 30, 60);
   }
-  (topLight < 40) ? textColor = "white": textColor = "black";
+  topLight < 40 ? (textColor = "white") : (textColor = "black");
   document.documentElement.style.setProperty("--color-text", textColor);
   document.documentElement.style.setProperty("--color-top-h", topHue);
   document.documentElement.style.setProperty("--color-top-l", `${topLight}%`);
